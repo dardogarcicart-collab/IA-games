@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diagnóstico - IA-Games</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #fff; }
+        .log { padding: 10px; margin: 5px 0; border-left: 3px solid #fff; }
+        .success { border-left-color: #00ff00; color: #00ff00; }
+        .error { border-left-color: #ff0000; color: #ff0000; }
+        .info { border-left-color: #0099ff; color: #0099ff; }
+        pre { background: #333; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Diagnóstico del Sistema IA-Games</h1>
+    <div id="diagnostics"></div>
+
+    <script src="js/brain/CognitiveSystem.js"></script>
+    <script src="js/learning/LearningSystem.js"></script>
+    <script src="js/physics/PhysicsEngine.js"></script>
+    <script src="js/core/Entities.js"></script>
+
+    <script>
+        const diag = document.getElementById('diagnostics');
+
+        function log(message, type = 'info') {
+            const el = document.createElement('div');
+            el.className = `log ${type}`;
+            el.textContent = message;
+            diag.appendChild(el);
+            console.log(message);
+        }
+
+        function logError(message, error) {
+            log(message + ': ' + error.message, 'error');
+            const pre = document.createElement('pre');
+            pre.textContent = error.stack;
+            diag.appendChild(pre);
+        }
+
+        // Test cada módulo
+        log('Iniciando diagnóstico...', 'info');
+
+        try {
+            const cs = new CognitiveSystem({energy: 50, maxEnergy: 100, mood: 'neutral', onGround: true});
+            log('✓ CognitiveSystem cargado', 'success');
+        } catch(e) {
+            logError('✗ CognitiveSystem falló', e);
+        }
+
+        try {
+            const ls = new LearningSystem();
+            log('✓ LearningSystem cargado', 'success');
+            const state = ls.getState({x: 100, y: 100, energy: 50}, [], []);
+            log(`  Estado de prueba: "${state}"`, 'info');
+        } catch(e) {
+            logError('✗ LearningSystem falló', e);
+        }
+
+        try {
+            const pe = new PhysicsEngine();
+            log('✓ PhysicsEngine cargado', 'success');
+        } catch(e) {
+            logError('✗ PhysicsEngine falló', e);
+        }
+
+        try {
+            const canvas = document.createElement('canvas');
+            canvas.width = 800;
+            canvas.height = 500;
+            const agent = new Agent(canvas);
+            log('✓ Agent (Entidades) cargado', 'success');
+            log(`  Posición inicial: (${Math.round(agent.x)}, ${Math.round(agent.y)})`, 'info');
+            log(`  Energía: ${agent.energy}/${agent.maxEnergy}`, 'info');
+            log(`  Mood: ${agent.mood}`, 'info');
+            log(`  Brain: ${agent.brain ? 'sí' : 'no'}`, 'info');
+            log(`  Learning: ${agent.learning ? 'sí' : 'no'}`, 'info');
+            log(`  Physics: ${agent.physics ? 'sí' : 'no'}`, 'info');
+        } catch(e) {
+            logError('✗ Agent falló', e);
+        }
+
+        log('Diagnóstico completado', 'success');
+        log('Abra IASistem.html para usar el simulador', 'info');
+    </script>
+</body>
+</html>

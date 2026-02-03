@@ -373,8 +373,14 @@
          * Inicializar el agente
          */
         function initAgent() {
-            agent = new Agent(canvas);
-            agent.color = document.getElementById('agentColor').value;
+            try {
+                agent = new Agent(canvas);
+                agent.color = document.getElementById('agentColor').value;
+                console.log('✓ Agente creado exitosamente');
+            } catch(e) {
+                console.error('✗ Error al crear agente:', e.message);
+                console.error(e);
+            }
         }
 
         // ==========================================
@@ -470,39 +476,44 @@
          * Loop principal del juego
          */
         function gameLoop() {
-            frameCount++;
+            try {
+                frameCount++;
 
-            // Limpiar canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                // Limpiar canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Fondo
-            ctx.fillStyle = 'rgba(135, 206, 235, 0.5)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height - GROUND_HEIGHT);
-            
-            drawGround();
+                // Fondo
+                ctx.fillStyle = 'rgba(135, 206, 235, 0.5)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height - GROUND_HEIGHT);
+                
+                drawGround();
 
-            // Actualizar comidas
-            foods.forEach(food => {
-                food.update();
-                food.draw(ctx);
-            });
+                // Actualizar comidas
+                foods.forEach(food => {
+                    food.update();
+                    food.draw(ctx);
+                });
 
-            // Dibujar bloques
-            blocks.forEach(block => {
-                block.draw(ctx);
-            });
+                // Dibujar bloques
+                blocks.forEach(block => {
+                    block.draw(ctx);
+                });
 
-            // Actualizar y dibujar agente
-            const jumpPenalty = document.getElementById('jumpPenalty').checked;
-            agent.color = document.getElementById('agentColor').value;
-            agent.update(foods, blocks, jumpPenalty);
-            agent.draw(ctx);
+                // Actualizar y dibujar agente
+                const jumpPenalty = document.getElementById('jumpPenalty').checked;
+                agent.color = document.getElementById('agentColor').value;
+                agent.update(foods, blocks, jumpPenalty);
+                agent.draw(ctx);
 
-            // Actualizar interfaz
-            updateUI();
+                // Actualizar interfaz
+                updateUI();
 
-            // Continuar loop
-            requestAnimationFrame(gameLoop);
+                // Continuar loop
+                requestAnimationFrame(gameLoop);
+            } catch(e) {
+                console.error('Error en gameLoop:', e.message);
+                console.error(e);
+            }
         }
 
         // ==========================================

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Módulos</title>
+</head>
+<body>
+    <h1>Test de Carga de Módulos</h1>
+    <div id="log"></div>
+
+    <script src="js/brain/CognitiveSystem.js"></script>
+    <script src="js/learning/LearningSystem.js"></script>
+    <script src="js/physics/PhysicsEngine.js"></script>
+    <script src="js/core/Entities.js"></script>
+
+    <script>
+        const log = document.getElementById('log');
+
+        try {
+            log.innerHTML += '<p style="color:green;">✓ CognitiveSystem cargado</p>';
+            const test1 = new CognitiveSystem({});
+            log.innerHTML += '<p style="color:green;">✓ CognitiveSystem instanciado</p>';
+        } catch(e) {
+            log.innerHTML += '<p style="color:red;">✗ Error CognitiveSystem: ' + e.message + '</p>';
+        }
+
+        try {
+            log.innerHTML += '<p style="color:green;">✓ LearningSystem cargado</p>';
+            const test2 = new LearningSystem();
+            log.innerHTML += '<p style="color:green;">✓ LearningSystem instanciado</p>';
+        } catch(e) {
+            log.innerHTML += '<p style="color:red;">✗ Error LearningSystem: ' + e.message + '</p>';
+        }
+
+        try {
+            log.innerHTML += '<p style="color:green;">✓ PhysicsEngine cargado</p>';
+            const test3 = new PhysicsEngine();
+            log.innerHTML += '<p style="color:green;">✓ PhysicsEngine instanciado</p>';
+        } catch(e) {
+            log.innerHTML += '<p style="color:red;">✗ Error PhysicsEngine: ' + e.message + '</p>';
+        }
+
+        try {
+            log.innerHTML += '<p style="color:green;">✓ Entities cargado</p>';
+            // Crear canvas de prueba
+            const canvas = document.createElement('canvas');
+            const test4 = new Agent(canvas);
+            log.innerHTML += '<p style="color:green;">✓ Agent instanciado</p>';
+        } catch(e) {
+            log.innerHTML += '<p style="color:red;">✗ Error Agent: ' + e.message + '</p>';
+            log.innerHTML += '<pre style="color:red;">' + e.stack + '</pre>';
+        }
+    </script>
+</body>
+</html>
