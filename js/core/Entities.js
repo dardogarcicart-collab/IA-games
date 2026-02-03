@@ -436,3 +436,117 @@ class Flag {
         ctx.fill();
     }
 }
+
+/**
+ * CLASE POWERUP
+ */
+class PowerUp {
+    constructor(x, y, type = 'speed') {
+        this.x = x;
+        this.y = y;
+        this.size = 20;
+        this.type = type; // speed, shield, energy
+        this.spin = 0;
+    }
+
+    update() {
+        this.spin += 0.1;
+    }
+
+    draw(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.spin);
+        
+        if (this.type === 'speed') {
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            for (let i = 0; i < 5; i++) {
+                const angle = (i / 5) * Math.PI * 2;
+                const x = Math.cos(angle) * this.size;
+                const y = Math.sin(angle) * this.size;
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.fill();
+        } else if (this.type === 'shield') {
+            ctx.strokeStyle = '#00FF00';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+            ctx.stroke();
+        } else if (this.type === 'energy') {
+            ctx.fillStyle = '#FF00FF';
+            ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+        }
+        
+        ctx.restore();
+    }
+}
+
+/**
+ * CLASE PORTAL
+ */
+class Portal {
+    constructor(x, y, linkedX, linkedY) {
+        this.x = x;
+        this.y = y;
+        this.linkedX = linkedX;
+        this.linkedY = linkedY;
+        this.size = 25;
+        this.pulse = 0;
+    }
+
+    update() {
+        this.pulse += 0.05;
+    }
+
+    draw(ctx) {
+        const scale = 1 + Math.sin(this.pulse) * 0.2;
+        ctx.fillStyle = 'rgba(0, 255, 255, 0.6)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * scale, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.strokeStyle = '#00FFFF';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 0.7, 0, Math.PI * 2);
+        ctx.stroke();
+    }
+}
+
+/**
+ * CLASE TRAMPA
+ */
+class Trap {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = 30;
+        this.hidden = true;
+        this.triggeredFrames = 0;
+    }
+
+    update() {
+        if (this.triggeredFrames > 0) {
+            this.triggeredFrames--;
+        }
+    }
+
+    draw(ctx) {
+        if (this.hidden && this.triggeredFrames === 0) {
+            ctx.fillStyle = '#8B7355';
+            ctx.fillRect(this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
+        } else {
+            ctx.fillStyle = '#FF0000';
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y - this.size / 2);
+            ctx.lineTo(this.x + this.size / 2, this.y + this.size / 2);
+            ctx.lineTo(this.x - this.size / 2, this.y + this.size / 2);
+            ctx.closePath();
+            ctx.fill();
+        }
+    }
+}
+

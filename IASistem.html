@@ -305,6 +305,19 @@
                 <div style="font-size: 12px; color: #666;">
                     <strong>Click Izq:</strong> Comida | <strong>Click Der:</strong> Bloque | <strong>Rueda:</strong> Cambiar tipo
                 </div>
+                
+                <!-- CANVAS DE DIBUJO -->
+                <div style="margin-top: 15px;">
+                    <label style="font-weight: 600; color: #333; margin-bottom: 8px; display: block;">
+                        🎨 Editor de Mapa Personalizado
+                    </label>
+                    <canvas id="drawingCanvas" style="width: 100%; max-width: 800px; border: 2px dashed #667eea; border-radius: 10px; display: block; margin: 10px 0;"></canvas>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px;">
+                        <button class="btn-primary" onclick="toggleDrawingMode()" id="drawBtn" style="flex: 1;">✏️ Modo Dibujo</button>
+                        <button class="btn-tertiary" onclick="loadDrawnMap()" style="flex: 1;">📥 Cargar Mapa</button>
+                        <button class="btn-secondary" onclick="clearDrawing()" style="flex: 1;">🗑️ Limpiar</button>
+                    </div>
+                </div>
             </div>
 
             <div class="controls">
@@ -322,6 +335,27 @@
                     </div>
                 </div>
 
+                <!-- MÚLTIPLES AGENTES -->
+                <div class="panel">
+                    <h3>👥 Múltiples Agentes</h3>
+                    <div class="control-group">
+                        <label for="agentCount">¿Cuántos amigos?</label>
+                        <select id="agentCount" onchange="setAgentCount(parseInt(this.value))">
+                            <option value="1">1 Agente (Solo)</option>
+                            <option value="2">2 Agentes (Dupla)</option>
+                            <option value="3">3 Agentes (Trío)</option>
+                            <option value="secondary" onclick="setPlacementMode('powerup')">⚡ PowerUp</button>
+                        <button class="btn-secondary" onclick="setPlacementMode('portal')">🌀 Portal</button>
+                        <button class="btn-secondary" onclick="setPlacementMode('trap')">🕳️ Trampa</button>
+                        <button class="btn-4">4 Agentes (Cuadrilla)</option>
+                            <option value="5">5 Agentes (Equipo)</option>
+                        </select>
+                    </div>
+                    <div id="agentSelector" style="margin-top: 10px;">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+
                 <!-- COLOCADORES DE ITEMS -->
                 <div class="panel">
                     <h3>🛠️ Crear Items</h3>
@@ -329,11 +363,7 @@
                         <button class="btn-secondary" onclick="setPlacementMode('food')">🍎 Comida</button>
                         <button class="btn-secondary" onclick="setPlacementMode('milk')">🥛 Leche</button>
                         <button class="btn-secondary" onclick="setPlacementMode('spike')">⚠️ Pincho</button>
-                        <button class="btn-secondary" onclick="setPlacementMode('block')">🧱 Bloque</button>
-                        <button class="btn-secondary" onclick="setPlacementMode('flag')">🚩 Bandera</button>
-                        <button class="btn-tertiary" onclick="clearAll()">🗑️ Limpiar</button>
-                    </div>
-                </div>
+                        <butto
 
                 <!-- MAPAS PREDEFINIDOS -->
                 <div class="panel">
@@ -371,31 +401,33 @@
                 <div class="panel">
                     <h3>📊 Estadísticas</h3>
                     <div class="stat-item">
-                        <span class="stat-label">Estado:</span>
-                        <span class="mood mood-neutral" id="moodDisplay">😐 Neutral</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Energía:</span>
-                        <span class="stat-value" id="energyDisplay">100%</span>
-                    </div>
-                    <div class="energy-bar">
-                        <div class="energy-fill" id="energyBar" style="width: 100%"></div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Comida: <span id="foodCount">0</span></span>
-                        <span class="stat-label">Leche: <span id="milkCount">0</span></span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Banderas: <span id="flagCount">0</span></span>
-                        <span class="stat-label">Saltos: <span id="jumpCount">0</span></span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Experiencia: <span id="experienceCount">0</span></span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Aprendizaje:</span>
-                        <span class="stat-value" id="epsilonDisplay">50%</span>
-                    </div>
+                        <id="statsContainer">
+                        <div class="stat-item">
+                            <span class="stat-label">Estado:</span>
+                            <span class="mood mood-neutral" id="moodDisplay">😐 Neutral</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Energía:</span>
+                            <span class="stat-value" id="energyDisplay">100%</span>
+                        </div>
+                        <div class="energy-bar">
+                            <div class="energy-fill" id="energyBar" style="width: 100%"></div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Comida: <span id="foodCount">0</span></span>
+                            <span class="stat-label">Leche: <span id="milkCount">0</span></span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Banderas: <span id="flagCount">0</span></span>
+                            <span class="stat-label">Saltos: <span id="jumpCount">0</span></span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Experiencia: <span id="experienceCount">0</span></span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Aprendizaje:</span>
+                            <span class="stat-value" id="epsilonDisplay">50%</span>
+                        </div
                 </div>
 
                 <!-- DEBUG -->
@@ -421,44 +453,153 @@
         // ==========================================
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        const drawingCanvas = document.getElementById('drawingCanvas');
+        const drawCtx = drawingCanvas.getContext('2d');
         
         canvas.width = 800;
         canvas.height = 500;
+        drawingCanvas.width = 800;
+        drawingCanvas.height = 500;
         const GROUND_HEIGHT = 50;
         
-        let agent;
+        let agents = [];
+        let activeAgentIndex = 0;
         let foods = [];
         let blocks = [];
         let spikes = [];
         let milks = [];
         let flags = [];
+        let powerups = [];
+        let portals = [];
+        let traps = [];
         let frameCount = 0;
         let placementMode = 'food';
         let lastScrollType = 'food';
+        let drawingMode = false;
+        let isDrawing = false;
+        let lastDrawX = 0;
+        let lastDrawY = 0;
+        const COLORS = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#A8E6CF'];
 
         // ==========================================
         // INICIALIZACIÓN
         // ==========================================
-        function initAgent() {
-            try {
-                const objective = document.getElementById('objective').value || 'food';
-                agent = new Agent(canvas, objective);
-                agent.color = document.getElementById('agentColor').value;
-                console.log('✓ Agente creado con objetivo:', objective);
-            } catch(e) {
-                console.error('Error:', e);
+        function initAgents(count = 1) {
+            agents = [];
+            for (let i = 0; i < count; i++) {
+                try {
+                    const objective = document.getElementById('objective').value || 'food';
+                    const agent = new Agent(canvas, objective);
+                    agent.color = COLORS[i % COLORS.length];
+                    agent.startX = 50 + i * 20;
+                    agent.x = agent.startX;
+                    agents.push(agent);
+                    console.log(`✓ Agente ${i+1} creado con objetivo: ${objective}`);
+                } catch(e) {
+                    console.error(`Error creando agente ${i}:`, e);
+                }
             }
+            updateAgentSelector();
+        }
+
+        function updateAgentSelector() {
+            const selector = document.getElementById('agentSelector');
+            selector.innerHTML = '';
+            agents.forEach((agent, idx) => {
+                const btn = document.createElement('button');
+                btn.className = idx === activeAgentIndex ? 'btn-primary' : 'btn-secondary';
+                btn.style.padding = '6px';
+                btn.style.fontSize = '11px';
+                btn.textContent = `Agente ${idx + 1} ${COLORS[idx % COLORS.length] === agent.color ? '✓' : ''}`;
+                btn.onclick = () => { activeAgentIndex = idx; updateAgentSelector(); };
+                selector.appendChild(btn);
+            });
+        }
+
+        function setAgentCount(count) {
+            initAgents(count);
+        }
+
+        // ==========================================
+        // FUNCIONES DE DIBUJO
+        // ==========================================
+        function toggleDrawingMode() {
+            drawingMode = !drawingMode;
+            const btn = document.getElementById('drawBtn');
+            if (drawingMode) {
+                btn.textContent = '✏️ Dibujando...';
+                btn.style.background = '#FF6B6B';
+                canvas.style.pointerEvents = 'none';
+            } else {
+                btn.textContent = '✏️ Modo Dibujo';
+                btn.style.background = '';
+                canvas.style.pointerEvents = 'auto';
+            }
+        }
+
+        function startDrawing(e) {
+            if (!drawingMode) return;
+            isDrawing = true;
+            const rect = drawingCanvas.getBoundingClientRect();
+            lastDrawX = e.clientX - rect.left;
+            lastDrawY = e.clientY - rect.top;
+        }
+
+        function draw(e) {
+            if (!isDrawing || !drawingMode) return;
+            const rect = drawingCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            drawCtx.strokeStyle = '#667eea';
+            drawCtx.lineWidth = 3;
+            drawCtx.lineCap = 'round';
+            drawCtx.lineJoin = 'round';
+            drawCtx.beginPath();
+            drawCtx.moveTo(lastDrawX, lastDrawY);
+            drawCtx.lineTo(x, y);
+            drawCtx.stroke();
+
+            lastDrawX = x;
+            lastDrawY = y;
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function clearDrawing() {
+            drawCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+        }
+
+        function loadDrawnMap() {
+            const imageData = drawCtx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+            const data = imageData.data;
+            blocks = [];
+
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+                if (a > 128 && (r > 100 || g > 100 || b > 100)) {
+                    const pixelIndex = i / 4;
+                    const x = (pixelIndex % drawingCanvas.width) * (canvas.width / drawingCanvas.width);
+                    const y = Math.floor(pixelIndex / drawingCanvas.width) * (canvas.height / drawingCanvas.height);
+                    if (Math.random() > 0.7) {
+                        blocks.push(new Block(x, y));
+                    }
+                }
+            }
+            console.log(`✓ Mapa personalizado cargado con ${blocks.length} bloques`);
         }
 
         // ==========================================
         // FUNCIONES DE CONTROL
         // ==========================================
         function changeObjective(value) {
-            if (agent) {
+            agents.forEach(agent => {
                 agent.objective = value;
-                agent.learning.epsilon = 0.5;
-                console.log('Objetivo cambió a:', value);
-            }
+                agent.learning.epsilon = 0.3;
+            });
+            console.log('Objetivo cambió a:', value);
         }
 
         function setPlacementMode(mode) {
@@ -493,16 +634,23 @@
             spikes = [];
             milks = [];
             flags = [];
+            powerups = [];
+            portals = [];
+            traps = [];
         }
 
         function resetSimulation() {
-            initAgent();
+            const count = agents.length || 1;
+            initAgents(count);
             clearAll();
             frameCount = 0;
             console.log('Simulación reiniciada');
         }
 
         function updateUI() {
+            if (agents.length === 0) return;
+            const agent = agents[activeAgentIndex];
+
             const energyPercent = Math.round((agent.energy / agent.maxEnergy) * 100);
             document.getElementById('energyDisplay').textContent = energyPercent + '%';
             document.getElementById('energyBar').style.width = energyPercent + '%';
@@ -516,13 +664,7 @@
                 energyBar.style.background = 'linear-gradient(90deg, #FF6B6B 0%, #FF3838 100%)';
             }
 
-            const moodEmojis = {
-                'dying': '💀',
-                'tired': '😴',
-                'neutral': '😐',
-                'happy': '😊'
-            };
-
+            const moodEmojis = { 'dying': '💀', 'tired': '😴', 'neutral': '😐', 'happy': '😊' };
             const moodDisplay = document.getElementById('moodDisplay');
             moodDisplay.textContent = moodEmojis[agent.mood] + ' ' + agent.mood.charAt(0).toUpperCase() + agent.mood.slice(1);
             moodDisplay.className = 'mood mood-' + agent.mood;
@@ -534,11 +676,11 @@
             document.getElementById('experienceCount').textContent = agent.learning.stats.totalExperiences;
             document.getElementById('epsilonDisplay').textContent = Math.round((1 - agent.learning.epsilon) * 100) + '%';
 
-            // Debug info
             const debugInfo = document.getElementById('debugInfo');
             const mentalStatus = agent.brain.getMentalStatus();
             const stats = agent.learning.getStats();
             debugInfo.innerHTML = `
+                <strong>Agente: ${activeAgentIndex + 1}/${agents.length}</strong><br>
                 <strong>Visión:</strong> ${mentalStatus.vision || 'Buscando...'}<br>
                 <strong>Objetivo:</strong> ${agent.objective}<br>
                 <strong>Costo Salto:</strong> ${mentalStatus.jumpCost}<br>
@@ -572,15 +714,23 @@
                 
                 drawGround();
 
+                // Dibujar items
                 foods.forEach(food => { food.update(); food.draw(ctx); });
                 milks.forEach(milk => { milk.update(); milk.draw(ctx); });
                 blocks.forEach(block => block.draw(ctx));
                 spikes.forEach(spike => spike.draw(ctx));
                 flags.forEach(flag => { flag.update(); flag.draw(ctx); });
+                powerups.forEach(p => { p.update(); p.draw(ctx); });
+                portals.forEach(p => { p.update(); p.draw(ctx); });
+                traps.forEach(t => { t.update(); t.draw(ctx); });
 
                 const jumpPenalty = document.getElementById('jumpPenalty').checked;
-                agent.update(foods, blocks, spikes, milks, flags, jumpPenalty);
-                agent.draw(ctx);
+
+                // Actualizar todos los agentes
+                agents.forEach(agent => {
+                    agent.update(foods, blocks, spikes, milks, flags, jumpPenalty);
+                    agent.draw(ctx);
+                });
 
                 updateUI();
 
@@ -594,6 +744,7 @@
         // EVENT LISTENERS
         // ==========================================
         canvas.addEventListener('click', (e) => {
+            if (drawingMode) return;
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -603,20 +754,29 @@
             else if (placementMode === 'spike') spikes.push(new Spike(x, y));
             else if (placementMode === 'block') blocks.push(new Block(x - 20, y - 20));
             else if (placementMode === 'flag') flags.push(new Flag(x, y));
+            else if (placementMode === 'powerup') powerups.push(new PowerUp(x, y, 'speed'));
+            else if (placementMode === 'portal') portals.push(new Portal(x, y, 700, 300));
+            else if (placementMode === 'trap') traps.push(new Trap(x, y));
         });
 
         canvas.addEventListener('wheel', (e) => {
             e.preventDefault();
-            const types = ['food', 'milk', 'spike', 'block', 'flag'];
+            const types = ['food', 'milk', 'spike', 'block', 'flag', 'powerup', 'portal', 'trap'];
             const currentIndex = types.indexOf(lastScrollType);
             const newIndex = (currentIndex + (e.deltaY > 0 ? 1 : -1)) % types.length;
             setPlacementMode(types[newIndex < 0 ? types.length - 1 : newIndex]);
         });
 
+        // Canvas de dibujo
+        drawingCanvas.addEventListener('mousedown', startDrawing);
+        drawingCanvas.addEventListener('mousemove', draw);
+        drawingCanvas.addEventListener('mouseup', stopDrawing);
+        drawingCanvas.addEventListener('mouseleave', stopDrawing);
+
         // ==========================================
         // INICIAR
         // ==========================================
-        initAgent();
+        initAgents(1);
         loadMap('simple');
         gameLoop();
     </script>

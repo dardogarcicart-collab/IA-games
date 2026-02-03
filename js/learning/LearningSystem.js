@@ -6,9 +6,9 @@ class LearningSystem {
     constructor(learningRate = 0.2, discountFactor = 0.95) {
         this.learningRate = learningRate;
         this.discountFactor = discountFactor;
-        this.epsilon = 0.5; // Exploración inicial
-        this.epsilonDecay = 0.9995;
-        this.minEpsilon = 0.05;
+        this.epsilon = 0.3; // Menos exploración inicial (menos caprichos)
+        this.epsilonDecay = 0.9998; // Decay más rápido (menos aleatorio)
+        this.minEpsilon = 0.02; // Mínimo más bajo (casi nada de aleatorio)
         
         this.qTable = {};
         this.stats = {
