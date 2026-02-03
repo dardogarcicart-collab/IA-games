@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Vida Artificial - Q-Learning</title>
+    <title>🤖 IA Life Simulator - Inteligencia Artificial Real</title>
     <style>
         * {
             margin: 0;
@@ -18,7 +18,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
         }
 
         .container {
@@ -26,7 +26,7 @@
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             overflow: hidden;
-            max-width: 1200px;
+            max-width: 1400px;
             width: 100%;
         }
 
@@ -42,52 +42,45 @@
             margin-bottom: 5px;
         }
 
-        .header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
         .main-content {
             display: flex;
             gap: 20px;
             padding: 20px;
         }
 
-        .canvas-container {
+        .canvas-section {
             flex: 1;
-            background: #f0f4f8;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         canvas {
-            display: block;
-            border-radius: 8px;
-            background: linear-gradient(180deg, #87CEEB 0%, #98D8E8 50%, #8B7355 100%);
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: rgba(135, 206, 235, 0.2);
             cursor: crosshair;
         }
 
         .controls {
-            width: 280px;
+            flex: 0 0 300px;
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
 
         .panel {
-            background: #f8f9fa;
-            padding: 15px;
+            background: #f5f5f5;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            border-left: 4px solid #667eea;
         }
 
         .panel h3 {
-            font-size: 16px;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             color: #333;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 5px;
+            font-size: 14px;
+            text-transform: uppercase;
         }
 
         .control-group {
@@ -96,118 +89,94 @@
 
         .control-group label {
             display: block;
-            font-size: 13px;
-            color: #555;
+            font-size: 12px;
+            color: #666;
             margin-bottom: 5px;
-            font-weight: 500;
+            font-weight: 600;
         }
 
-        .color-picker {
+        .control-group input[type="color"],
+        .control-group select,
+        .control-group button {
             width: 100%;
-            height: 40px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        select {
             cursor: pointer;
-        }
-
-        .toggle-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 0;
-        }
-
-        .toggle-container label {
-            margin: 0;
-            font-size: 13px;
-        }
-
-        .toggle {
-            position: relative;
-            width: 50px;
-            height: 26px;
-        }
-
-        .toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: 0.4s;
-            border-radius: 26px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: 0.4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: #667eea;
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(24px);
         }
 
         button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
             cursor: pointer;
+            font-weight: 600;
             transition: all 0.3s;
+            border: none;
         }
 
-        .btn-reset {
-            background: #ff6b6b;
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background: #667eea;
             color: white;
         }
 
-        .btn-reset:hover {
-            background: #ff5252;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+        .btn-secondary {
+            background: #FF6B6B;
+            color: white;
         }
 
-        .stats {
-            display: flex;
-            flex-direction: column;
+        .btn-tertiary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .map-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 8px;
+        }
+
+        .map-buttons button {
+            padding: 6px;
+            font-size: 11px;
+        }
+
+        .item-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .item-buttons button {
+            padding: 8px;
+            font-size: 12px;
+            background: #e0e0e0;
+            color: #333;
         }
 
         .stat-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 13px;
+            font-size: 12px;
+            margin-bottom: 8px;
         }
 
         .stat-label {
             color: #666;
+            font-weight: 600;
         }
 
         .stat-value {
-            font-weight: 600;
             color: #333;
+            font-weight: 700;
+            font-size: 14px;
         }
 
         .energy-bar {
@@ -226,31 +195,21 @@
             border-radius: 10px;
         }
 
-        .mood-indicator {
+        .mood {
             display: inline-block;
-            padding: 4px 10px;
-            border-radius: 15px;
+            padding: 4px 8px;
+            border-radius: 12px;
             font-size: 12px;
             font-weight: 600;
         }
 
-        .mood-neutral {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .mood-angry {
-            background: #ffebee;
-            color: #c62828;
-        }
-
-        .mood-tired {
-            background: #fff3e0;
-            color: #e65100;
-        }
+        .mood-dying { background: #ffebee; color: #c62828; }
+        .mood-tired { background: #fff3e0; color: #e65100; }
+        .mood-neutral { background: #e3f2fd; color: #1976d2; }
+        .mood-happy { background: #f1f8e9; color: #33691e; }
 
         .instructions {
-            font-size: 12px;
+            font-size: 11px;
             color: #666;
             line-height: 1.6;
         }
@@ -259,12 +218,75 @@
             color: #333;
         }
 
-        @media (max-width: 900px) {
+        .toggle-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 24px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #667eea;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(16px);
+        }
+
+        .debug-info {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-family: monospace;
+            color: #333;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 1200px) {
             .main-content {
                 flex-direction: column;
             }
 
             .controls {
+                flex: none;
                 width: 100%;
             }
         }
@@ -273,77 +295,121 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🤖 Simulador de Vida Artificial</h1>
-            <p>Aprendizaje por Refuerzo (Q-Learning)</p>
+            <h1>🤖 Simulador de Vida Artificial - Q-Learning Real</h1>
+            <p>Observa cómo una IA aprende y se adapta en tiempo real</p>
         </div>
 
         <div class="main-content">
-            <div class="canvas-container">
+            <div class="canvas-section">
                 <canvas id="gameCanvas"></canvas>
+                <div style="font-size: 12px; color: #666;">
+                    <strong>Click Izq:</strong> Comida | <strong>Click Der:</strong> Bloque | <strong>Rueda:</strong> Cambiar tipo
+                </div>
             </div>
 
             <div class="controls">
+                <!-- OBJETIVO -->
+                <div class="panel">
+                    <h3>🎯 Objetivo del Agente</h3>
+                    <div class="control-group">
+                        <label for="objective">¿Qué debe aprender?</label>
+                        <select id="objective" onchange="changeObjective(this.value)">
+                            <option value="food">🍎 Buscar Comida</option>
+                            <option value="milk">🥛 Beber Leche</option>
+                            <option value="flag">🚩 Alcanzar Bandera</option>
+                            <option value="no_jump">🚫 No Saltar</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- COLOCADORES DE ITEMS -->
+                <div class="panel">
+                    <h3>🛠️ Crear Items</h3>
+                    <div class="item-buttons">
+                        <button class="btn-secondary" onclick="setPlacementMode('food')">🍎 Comida</button>
+                        <button class="btn-secondary" onclick="setPlacementMode('milk')">🥛 Leche</button>
+                        <button class="btn-secondary" onclick="setPlacementMode('spike')">⚠️ Pincho</button>
+                        <button class="btn-secondary" onclick="setPlacementMode('block')">🧱 Bloque</button>
+                        <button class="btn-secondary" onclick="setPlacementMode('flag')">🚩 Bandera</button>
+                        <button class="btn-tertiary" onclick="clearAll()">🗑️ Limpiar</button>
+                    </div>
+                </div>
+
+                <!-- MAPAS PREDEFINIDOS -->
+                <div class="panel">
+                    <h3>🗺️ Mapas</h3>
+                    <div class="map-buttons">
+                        <button onclick="loadMap('empty')" class="btn-tertiary">Vacío</button>
+                        <button onclick="loadMap('simple')" class="btn-tertiary">Simple</button>
+                        <button onclick="loadMap('obstacle')" class="btn-tertiary">Obstáculos</button>
+                        <button onclick="loadMap('maze')" class="btn-tertiary">Laberinto</button>
+                    </div>
+                </div>
+
+                <!-- CONFIGURACIÓN -->
                 <div class="panel">
                     <h3>⚙️ Configuración</h3>
-                    
                     <div class="control-group">
                         <label for="agentColor">Color del Agente</label>
-                        <input type="color" id="agentColor" class="color-picker" value="#FF6B6B">
+                        <input type="color" id="agentColor" value="#FF6B6B" onchange="agent.color = this.value;">
                     </div>
-
-                    <div class="toggle-container">
-                        <label>Castigo por Saltar</label>
-                        <label class="toggle">
-                            <input type="checkbox" id="jumpPenalty" checked>
-                            <span class="slider"></span>
+                    <div class="control-group">
+                        <label>
+                            <div class="toggle-row">
+                                <span>Castigo por Saltar</span>
+                                <label class="toggle">
+                                    <input type="checkbox" id="jumpPenalty" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
                         </label>
                     </div>
-
-                    <button class="btn-reset" onclick="resetSimulation()">🔄 Reset</button>
+                    <button class="btn-primary" onclick="resetSimulation()">🔄 Reset Completo</button>
                 </div>
 
+                <!-- ESTADÍSTICAS -->
                 <div class="panel">
                     <h3>📊 Estadísticas</h3>
-                    <div class="stats">
-                        <div class="stat-item">
-                            <span class="stat-label">Estado:</span>
-                            <span class="mood-indicator mood-neutral" id="moodDisplay">Neutral</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Energía:</span>
-                            <span class="stat-value" id="energyDisplay">100</span>
-                        </div>
-                        <div class="energy-bar">
-                            <div class="energy-fill" id="energyBar" style="width: 100%"></div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Comida Consumida:</span>
-                            <span class="stat-value" id="foodCount">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Saltos:</span>
-                            <span class="stat-value" id="jumpCount">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Experiencia:</span>
-                            <span class="stat-value" id="experienceCount">0</span>
-                        </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Estado:</span>
+                        <span class="mood mood-neutral" id="moodDisplay">😐 Neutral</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Energía:</span>
+                        <span class="stat-value" id="energyDisplay">100%</span>
+                    </div>
+                    <div class="energy-bar">
+                        <div class="energy-fill" id="energyBar" style="width: 100%"></div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Comida: <span id="foodCount">0</span></span>
+                        <span class="stat-label">Leche: <span id="milkCount">0</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Banderas: <span id="flagCount">0</span></span>
+                        <span class="stat-label">Saltos: <span id="jumpCount">0</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Experiencia: <span id="experienceCount">0</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Aprendizaje:</span>
+                        <span class="stat-value" id="epsilonDisplay">50%</span>
                     </div>
                 </div>
 
+                <!-- DEBUG -->
                 <div class="panel">
-                    <h3>ℹ️ Instrucciones</h3>
-                    <div class="instructions">
-                        <p><strong>Click Izquierdo:</strong> Crear comida 🍎</p>
-                        <p><strong>Click Derecho:</strong> Colocar bloques 🧱</p>
-                        <p><strong>La IA aprende sola:</strong> Al principio se moverá aleatoriamente, pero con el tiempo aprenderá a buscar comida y evitar desperdiciar energía.</p>
+                    <h3>🔍 Debug</h3>
+                    <div class="debug-info" id="debugInfo">
+                        Iniciando...
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Importar módulos -->
+    <!-- MÓDULOS -->
     <script src="js/brain/CognitiveSystem.js"></script>
     <script src="js/learning/LearningSystem.js"></script>
     <script src="js/physics/PhysicsEngine.js"></script>
@@ -351,87 +417,96 @@
 
     <script>
         // ==========================================
-        // CONFIGURACIÓN INICIAL DEL SIMULADOR
+        // CONFIGURACIÓN INICIAL
         // ==========================================
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
-        // Dimensiones del canvas
         canvas.width = 800;
         canvas.height = 500;
         const GROUND_HEIGHT = 50;
         
-        // ==========================================
-        // VARIABLES GLOBALES
-        // ==========================================
         let agent;
         let foods = [];
         let blocks = [];
+        let spikes = [];
+        let milks = [];
+        let flags = [];
         let frameCount = 0;
-        
-        /**
-         * Inicializar el agente
-         */
+        let placementMode = 'food';
+        let lastScrollType = 'food';
+
+        // ==========================================
+        // INICIALIZACIÓN
+        // ==========================================
         function initAgent() {
             try {
-                agent = new Agent(canvas);
+                const objective = document.getElementById('objective').value || 'food';
+                agent = new Agent(canvas, objective);
                 agent.color = document.getElementById('agentColor').value;
-                console.log('✓ Agente creado exitosamente');
+                console.log('✓ Agente creado con objetivo:', objective);
             } catch(e) {
-                console.error('✗ Error al crear agente:', e.message);
-                console.error(e);
+                console.error('Error:', e);
             }
         }
-
-        // ==========================================
-        // EVENT LISTENERS
-        // ==========================================
-        canvas.addEventListener('mousedown', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            if (e.button === 0) {
-                // Click izquierdo: Crear comida
-                foods.push(new Food(x, y));
-            }
-        });
-
-        canvas.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            // Click derecho: Crear bloque
-            blocks.push(new Block(x - 20, y - 20));
-        });
 
         // ==========================================
         // FUNCIONES DE CONTROL
         // ==========================================
-        
-        /**
-         * Resetear la simulación completamente
-         */
-        function resetSimulation() {
-            initAgent();
-            foods = [];
-            blocks = [];
-            frameCount = 0;
-            console.log('✨ Simulación reiniciada');
+        function changeObjective(value) {
+            if (agent) {
+                agent.objective = value;
+                agent.learning.epsilon = 0.5;
+                console.log('Objetivo cambió a:', value);
+            }
         }
 
-        /**
-         * Actualizar interfaz de usuario
-         */
+        function setPlacementMode(mode) {
+            placementMode = mode;
+            lastScrollType = mode;
+            console.log('Modo:', mode);
+        }
+
+        function loadMap(mapName) {
+            clearAll();
+            
+            if (mapName === 'simple') {
+                foods.push(new Food(650, 350));
+                blocks.push(new Block(400, 350));
+            } else if (mapName === 'obstacle') {
+                foods.push(new Food(700, 300));
+                blocks.push(new Block(250, 350));
+                blocks.push(new Block(500, 350));
+                spikes.push(new Spike(350, 400));
+            } else if (mapName === 'maze') {
+                foods.push(new Food(700, 300));
+                for (let x = 200; x < 700; x += 100) {
+                    blocks.push(new Block(x, 350));
+                }
+                flags.push(new Flag(750, 300));
+            }
+        }
+
+        function clearAll() {
+            foods = [];
+            blocks = [];
+            spikes = [];
+            milks = [];
+            flags = [];
+        }
+
+        function resetSimulation() {
+            initAgent();
+            clearAll();
+            frameCount = 0;
+            console.log('Simulación reiniciada');
+        }
+
         function updateUI() {
-            // Energía
             const energyPercent = Math.round((agent.energy / agent.maxEnergy) * 100);
-            document.getElementById('energyDisplay').textContent = energyPercent;
+            document.getElementById('energyDisplay').textContent = energyPercent + '%';
             document.getElementById('energyBar').style.width = energyPercent + '%';
 
-            // Color de barra según energía
             const energyBar = document.getElementById('energyBar');
             if (energyPercent > 60) {
                 energyBar.style.background = 'linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%)';
@@ -441,27 +516,42 @@
                 energyBar.style.background = 'linear-gradient(90deg, #FF6B6B 0%, #FF3838 100%)';
             }
 
-            // Estado de ánimo
-            const moodDisplay = document.getElementById('moodDisplay');
-            const moodTexts = { 'neutral': '😐 Neutral', 'angry': '😠 Enojado', 'tired': '😴 Cansado' };
-            moodDisplay.textContent = moodTexts[agent.mood];
-            moodDisplay.className = 'mood-indicator mood-' + agent.mood;
+            const moodEmojis = {
+                'dying': '💀',
+                'tired': '😴',
+                'neutral': '😐',
+                'happy': '😊'
+            };
 
-            // Estadísticas
+            const moodDisplay = document.getElementById('moodDisplay');
+            moodDisplay.textContent = moodEmojis[agent.mood] + ' ' + agent.mood.charAt(0).toUpperCase() + agent.mood.slice(1);
+            moodDisplay.className = 'mood mood-' + agent.mood;
+
             document.getElementById('foodCount').textContent = agent.foodEaten;
+            document.getElementById('milkCount').textContent = agent.milkDrunk;
+            document.getElementById('flagCount').textContent = agent.flagsReached;
             document.getElementById('jumpCount').textContent = agent.jumpCount;
             document.getElementById('experienceCount').textContent = agent.learning.stats.totalExperiences;
+            document.getElementById('epsilonDisplay').textContent = Math.round((1 - agent.learning.epsilon) * 100) + '%';
+
+            // Debug info
+            const debugInfo = document.getElementById('debugInfo');
+            const mentalStatus = agent.brain.getMentalStatus();
+            const stats = agent.learning.getStats();
+            debugInfo.innerHTML = `
+                <strong>Visión:</strong> ${mentalStatus.vision || 'Buscando...'}<br>
+                <strong>Objetivo:</strong> ${agent.objective}<br>
+                <strong>Costo Salto:</strong> ${mentalStatus.jumpCost}<br>
+                <strong>Estados:</strong> ${stats.states}<br>
+                <strong>Aprendizaje:</strong> ${(100 - stats.epsilon * 100).toFixed(1)}%<br>
+                <strong>Objetivos:</strong> ${stats.objectives}
+            `;
         }
 
-        /**
-         * Dibujar el suelo y decoraciones
-         */
         function drawGround() {
-            // Suelo
             ctx.fillStyle = '#7CB342';
             ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT);
 
-            // Cesped decorativo
             ctx.strokeStyle = '#558B2F';
             ctx.lineWidth = 2;
             for (let i = 0; i < canvas.width; i += 10) {
@@ -472,54 +562,62 @@
             }
         }
 
-        /**
-         * Loop principal del juego
-         */
         function gameLoop() {
             try {
                 frameCount++;
 
-                // Limpiar canvas
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                // Fondo
-                ctx.fillStyle = 'rgba(135, 206, 235, 0.5)';
+                ctx.fillStyle = 'rgba(135, 206, 235, 0.3)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height - GROUND_HEIGHT);
                 
                 drawGround();
 
-                // Actualizar comidas
-                foods.forEach(food => {
-                    food.update();
-                    food.draw(ctx);
-                });
+                foods.forEach(food => { food.update(); food.draw(ctx); });
+                milks.forEach(milk => { milk.update(); milk.draw(ctx); });
+                blocks.forEach(block => block.draw(ctx));
+                spikes.forEach(spike => spike.draw(ctx));
+                flags.forEach(flag => { flag.update(); flag.draw(ctx); });
 
-                // Dibujar bloques
-                blocks.forEach(block => {
-                    block.draw(ctx);
-                });
-
-                // Actualizar y dibujar agente
                 const jumpPenalty = document.getElementById('jumpPenalty').checked;
-                agent.color = document.getElementById('agentColor').value;
-                agent.update(foods, blocks, jumpPenalty);
+                agent.update(foods, blocks, spikes, milks, flags, jumpPenalty);
                 agent.draw(ctx);
 
-                // Actualizar interfaz
                 updateUI();
 
-                // Continuar loop
                 requestAnimationFrame(gameLoop);
             } catch(e) {
                 console.error('Error en gameLoop:', e.message);
-                console.error(e);
             }
         }
 
         // ==========================================
-        // INICIALIZAR LA SIMULACIÓN
+        // EVENT LISTENERS
+        // ==========================================
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (placementMode === 'food') foods.push(new Food(x, y));
+            else if (placementMode === 'milk') milks.push(new Milk(x, y));
+            else if (placementMode === 'spike') spikes.push(new Spike(x, y));
+            else if (placementMode === 'block') blocks.push(new Block(x - 20, y - 20));
+            else if (placementMode === 'flag') flags.push(new Flag(x, y));
+        });
+
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const types = ['food', 'milk', 'spike', 'block', 'flag'];
+            const currentIndex = types.indexOf(lastScrollType);
+            const newIndex = (currentIndex + (e.deltaY > 0 ? 1 : -1)) % types.length;
+            setPlacementMode(types[newIndex < 0 ? types.length - 1 : newIndex]);
+        });
+
+        // ==========================================
+        // INICIAR
         // ==========================================
         initAgent();
+        loadMap('simple');
         gameLoop();
     </script>
 </body>

@@ -1,16 +1,20 @@
 /**
  * SISTEMA DE FÍSICA REALISTA
- * Simula movimiento, gravedad, colisiones
  */
 class PhysicsEngine {
     constructor() {
         this.gravity = 0.6;
-        this.jumpPower = -12;
-        this.moveSpeed = 3;
-        this.friction = 0.88;
-        this.groundFriction = 0.7;
+        this.jumpPower = -13;
+        this.moveSpeed = 2.5;
+        this.friction = 0.85;
+        this.groundFriction = 0.6;
         this.maxVelocityX = 5;
         this.maxVelocityY = 15;
+        
+        // Costos metabólicos
+        this.basalCost = 0.02;
+        this.movementCost = 0.02;
+        this.jumpCost = 3; // Costo energético del salto
     }
 
     applyGravity(agent) {
@@ -34,18 +38,23 @@ class PhysicsEngine {
 
     applyMovement(agent, direction) {
         if (direction === 'left') {
-            agent.vx = -this.moveSpeed;
+            agent.vx = Math.max(-this.moveSpeed, agent.vx - 0.5);
         } else if (direction === 'right') {
-            agent.vx = this.moveSpeed;
+            agent.vx = Math.min(this.moveSpeed, agent.vx + 0.5);
         }
     }
 
     applyJump(agent, jumpPenalty) {
         if (agent.onGround) {
             agent.vy = this.jumpPower;
-            agent.isJumping = true;
             agent.onGround = false;
-            return { success: true, energyCost: jumpPenalty ? 2 : 0 };
+            agent.isJumping = true;
+            
+            // Registrar costo del salto
+            const cost = jumpPenalty ? this.jumpCost : 0;
+            agent.brain.recordJumpCost(cost);
+            
+            return { success: true, energyCost: cost };
         }
         return { success: false, energyCost: 0 };
     }
@@ -58,13 +67,11 @@ class PhysicsEngine {
     applyWorldBoundaries(agent, canvas) {
         const groundLevel = canvas.height - 50 - agent.size;
         
-        // Límites horizontales
         if (agent.x < 0) agent.x = 0;
         if (agent.x > canvas.width - agent.size) {
             agent.x = canvas.width - agent.size;
         }
         
-        // Límites verticales
         if (agent.y >= groundLevel) {
             agent.y = groundLevel;
             agent.onGround = true;
@@ -75,14 +82,10 @@ class PhysicsEngine {
     }
 
     calculateMetabolicCost(agent) {
-        let cost = 0.03;
+        let cost = this.basalCost;
         
         if (Math.abs(agent.vx) > 0.5) {
-            cost += 0.02;
-        }
-        
-        if (agent.isJumping) {
-            cost += 0.05;
+            cost += this.movementCost;
         }
         
         return cost;
@@ -97,13 +100,13 @@ class PhysicsEngine {
             
             if (collidingX && collidingY) {
                 // Colisión desde arriba
-                if (agent.y + agent.size <= block.y + 10) {
+                if (agent.y + agent.size <= block.y + 15) {
                     agent.y = block.y - agent.size;
                     agent.vy = 0;
                     agent.onGround = true;
                 }
                 // Colisión desde abajo
-                else if (agent.y >= block.y + block.size - 10) {
+                else if (agent.y >= block.y + block.size - 15) {
                     agent.y = block.y + block.size;
                     agent.vy = 0;
                 }
@@ -118,5 +121,22 @@ class PhysicsEngine {
                 }
             }
         }
+    }
+
+    checkSpikeCollisions(agent, spikes) {
+        for (let spike of spikes) {
+            const collidingX = agent.x < spike.x + spike.size &&
+                              agent.x + agent.size > spike.x;
+            const collidingY = agent.y < spike.y + spike.size &&
+                              agent.y + agent.size > spike.y;
+            
+            if (collidingX && collidingY) {
+                // Daño del pincho
+                agent.energy = Math.max(0, agent.energy - 20);
+                agent.spikeDamage = true;
+                return true;
+            }
+        }
+        return false;
     }
 }

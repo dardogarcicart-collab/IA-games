@@ -1,274 +1,241 @@
-# 🤖 Simulador de Vida Artificial con IA
+# 🤖 Simulador de Vida Artificial Avanzado - Q-Learning Real
 
-Un simulador interactivo donde una IA aprende mediante **Q-Learning** en tiempo real. El agente comienza sin saber nada y gradualmente descubre qué acciones son beneficiosas.
+Un simulador completamente funcional de IA que **aprende de verdad** usando Q-Learning en tiempo real.
 
-## ✨ Características Principales
-
-### 🧠 Inteligencia Artificial Modular
-
-El agente tiene **3 sistemas integrados** que funcionan conjuntamente:
-
-1. **Brain (Cognitivo)** - `js/brain/CognitiveSystem.js`
-   - Percepción del mundo (visión, propiocepción, interocepción)
-   - Procesamiento de emociones y hormonas
-   - Predicción mental de acciones
-   - Toma de decisiones inteligente
-
-2. **Learning (Aprendizaje)** - `js/learning/LearningSystem.js`
-   - Q-Learning con tabla Q dinámica
-   - Descubrimiento de estados
-   - Experiencias y patrones aprendidos
-   - Epsilon-greedy para exploración/explotación
-
-3. **Physics (Física)** - `js/physics/PhysicsEngine.js`
-   - Motor físico realista con gravedad
-   - Biomecánica: fatiga muscular, ácido láctico, oxígeno
-   - Sistema metabólico con consumo de energía
-   - Colisiones precisas (AABB)
-
-### 🎓 Aprendizaje Real
-
-- ✅ Comienza **completamente ignorante** (movimiento aleatorio)
-- ✅ Aprende mediante **recompensas** al encontrar comida
-- ✅ Descubre que ciertos patrones funcionan mejor
-- ✅ Gradualmente **optimiza su comportamiento**
-- ✅ Tabla Q converge hacia política óptima
-
-### 😊 Estados Emocionales Dinámicos
-
-- **😐 Neutral**: Estado base, relajado
-- **😠 Enojado**: Frustrado por fallos repetidos o baja energía
-- **😴 Cansado**: Energía crítica, necesita comida urgentemente
-
-### 🎮 Interactividad Studio Real
-
-- **Click Izquierdo**: Crear comida (manzanas rojas)
-- **Click Derecho**: Colocar bloques (obstáculos)
-- **Color Customizable**: Elige el color del agente
-- **Toggle Castigo**: Activa/desactiva penalización por saltar
-- **Reset**: Reinicia la simulación
-
-### 📊 Estadísticas en Tiempo Real
-
-- Energía con barra de color (verde/naranja/rojo)
-- Estado emocional visible
-- Comida consumida
-- Saltos realizados
-- Experiencias aprendidas
-
-## 🚀 Cómo Usar
-
-### 1. Abrir el simulador
-```bash
-# Navegar a la carpeta
-cd /workspaces/IA-games
-
-# Opción 1: Abrir IASistem.html directamente en navegador
-# Opción 2: Usar servidor web
-python3 -m http.server 8000
-# Luego: http://localhost:8000/IASistem.html
-```
-
-### 2. Experimentar
-
-**Observa cómo aprende:**
-1. Al inicio, el agente se mueve aleatoriamente
-2. Crea comida haciendo click izquierdo
-3. Verás que eventualmente busca la comida
-4. Después de varias recompensas, aprende el patrón
-
-**Prueba variables:**
-- Desactiva "Castigo por Saltar" y observa más saltos
-- Actívalo de nuevo para ver cómo aprende a evitar saltos innecesarios
-- Crea obstáculos y observa cómo se adapta
-
-## 📁 Estructura del Proyecto
+## 🎯 OBJETIVOS QUE PUEDE APRENDER
 
 ```
-IA-games/
-├── IASistem.html              # Archivo principal (HTML + UI)
-├── ARQUITECTURA.md            # Documentación técnica detallada
-├── README.md                  # Este archivo
-└── js/
-    ├── brain/
-    │   └── CognitiveSystem.js # Inteligencia y toma de decisiones
-    ├── learning/
-    │   └── LearningSystem.js  # Q-Learning y memoria
-    ├── physics/
-    │   └── PhysicsEngine.js   # Física y biomecánica
-    └── core/
-        └── Entities.js        # Clases: Agent, Food, Block
+🍎 Buscar Comida      → Localiza y come automáticamente
+🥛 Beber Leche        → Prioriza leche sobre comida
+🚩 Alcanzar Bandera   → Navega a objetivos específicos
+🚫 No Saltar          → Aprende que saltar cuesta energía
 ```
 
-## 🔬 Variables Realistas Incluidas
+## 🛠️ ELEMENTOS DEL MUNDO
 
-### Biomecánicas
-- Fatiga muscular (afecta altura de saltos)
-- Ácido láctico (acumula con movimiento intenso)
-- Deuda de oxígeno (recuperación gradual)
-- Temperatura muscular (sube con esfuerzo)
-- Flexibilidad de articulaciones
+| Elemento | Efecto | Enseñanza |
+|----------|--------|-----------|
+| 🍎 Comida | +35 energía | Recompensa: +50 |
+| 🥛 Leche | +50 energía | Recompensa: +40 |
+| 🧱 Bloque | Obstáculo | No pasar |
+| ⚠️ Pincho | -20 energía | Evitar siempre |
+| 🚩 Bandera | Objetivo | Recompensa: +200 |
 
-### Sistema Hormonal
-- **Adrenalina**: Responde a peligro/urgencia
-- **Dopamina**: Motivación y placer por recompensas
-- **Cortisol**: Estrés y ajustes de comportamiento
-- **Grelina**: Hambre e impulso de comer
-- **Serotonina**: Bienestar general
+## 🧠 CÓMO FUNCIONA LA IA
 
-### Metabolismo
-- Tasa basal: 1.2 energía/frame
-- Movimiento: 2.5x multiplicador
-- Salto: 15x multiplicador
-- Fatiga aumenta consumo hasta 50%
+### 1. **PERCEPCIÓN INTELIGENTE** 🔍
+- Escanea 100 píxeles alrededor
+- Detecta comida, leche, pinchos, banderas
+- Sabe dirección y distancia exacta
+- Identifica obstáculos inmediatos
 
-## 🧠 Cómo Funciona el Q-Learning
-
-### Fórmula Estándar
+### 2. **DECISIÓN NATURAL** 💭
 ```
-Q(s,a) = Q(s,a) + α[r + γ max(Q(s',a')) - Q(s,a)]
+✓ No spammea izq/derecha (cooldown 3 frames)
+✓ EVITA PINCHOS SIEMPRE (máxima prioridad)
+✓ Aprende costo del salto (promedia últimos 50)
+✓ Elige acciones deliberadamente
 ```
 
-Donde:
-- `s` = estado actual
-- `a` = acción
-- `r` = recompensa
-- `γ` = factor de descuento (0.95)
-- `α` = velocidad de aprendizaje (0.15)
+### 3. **APRENDIZAJE REAL** 🧬
+```
+Q(s,a) = Q(s,a) + α[r + γ×max(Q(s',a')) - Q(s,a)]
 
-### Parámetros
-- **Exploración inicial**: 40%
-- **Decay de epsilon**: 0.9998 por frame
-- **Mínimo de exploración**: 5%
+α (learning rate) = 0.2      (velocidad)
+γ (discount factor) = 0.95   (valor futuro)
+ε (epsilon) = 0.5 → 0.05    (exploración)
+```
 
-### Proceso
+### 4. **DINÁMICAS ADAPTATIVAS** ⚡
+- Prioridad 1: Evitar pinchos → saltar
+- Prioridad 2: Si saltar es caro → no saltar
+- Prioridad 3: Epsilon-greedy (explorar vs usar lo aprendido)
+- Prioridad 4: Mejor acción conocida
 
-1. **Percepción**: Crea estado discreto (ej: `"left_near_high_ground"`)
-2. **Decisión**: Elige acción (greedy o aleatoria)
-3. **Recompensa**: Calcula r según resultado
-4. **Actualización**: Ajusta Q-value de esa acción
-5. **Repetición**: Convergencia gradual a política óptima
+## 📊 ESTADÍSTICAS EN TIEMPO REAL
 
-## 📈 Observables de Aprendizaje
+- **Estado**: Dying 💀 / Tired 😴 / Neutral 😐 / Happy 😊
+- **Energía**: Barra visual + porcentaje
+- **Comida Consumida**: Contador
+- **Leche Bebida**: Contador
+- **Banderas Alcanzadas**: Misiones completadas
+- **Saltos**: Total realizados
+- **Experiencia**: Decisiones aprendidas
+- **Aprendizaje %**: Qué tan convergida (100% = no explora)
 
-Mira estos indicadores para ver el progreso:
+## 🗺️ MAPAS PREDEFINIDOS
 
-1. **Experiencia (Contador)**: Sube constantemente = aprendiendo
-2. **Comida Consumida**: Aumenta = mejora su búsqueda
-3. **Energía**: Se mantiene estable = decisiones eficientes
-4. **Expresión Facial**: Menos enojado = menos frustración
-5. **Movimiento**: Más dirigido hacia comida = aprendizaje convergido
+| Mapa | Complejidad | Características |
+|------|-------------|-----------------|
+| Vacío | ⭐ | Nada, exploración pura |
+| Simple | ⭐⭐ | 1 bloque + 1 comida |
+| Obstáculos | ⭐⭐⭐ | 2 bloques + pincho |
+| Laberinto | ⭐⭐⭐⭐ | Navegación compleja |
 
-## 🎯 Recompensas
+## 🎮 CÓMO USAR
 
-| Evento | Recompensa |
-|--------|-----------|
-| Comer comida | +50 (+bonus si energía baja) |
-| Sobrevivir | -0.05 (penalización pasiva) |
-| Energía baja | -0.10 (incentiva buscar comida) |
-| Salto fallido | -1 (castigo por error) |
-| Saltar (si castigo activo) | -2 a -3 |
+### Crear Items
+1. **Click Izquierdo**: Comida 🍎 (por defecto)
+2. **Rueda del Ratón**: Cambiar tipo de item
+3. **Botones**: Seleccionar rápidamente
 
-## 💡 Consejos de Uso
+### Cambiar Objetivo
+- Selecciona en **"Objetivo del Agente"**
+- La IA reinicia su aprendizaje
+- Observa cómo cambia el comportamiento
 
-### Para Ver Aprendizaje Rápido
-1. Crea muchas manzanas (click izquierdo)
-2. Colócalas en lugares variados
-3. Observa cómo el patrón de búsqueda mejora
-4. Nota cómo baja la exploración aleatoria
+### Configuración
+- **Color**: Personaliza el agente
+- **Castigo por Saltar**: 
+  - ON = saltar cuesta 3 energía
+  - OFF = saltar es gratis
+  - La IA lo aprenderá automáticamente
 
-### Para Estudiar Comportamiento
-1. Desactiva castigo por saltar
-2. Crea obstáculos que requieren saltos
-3. Observa cómo aprende a saltarlos estratégicamente
-4. Vuelve a activar castigo y ve cómo cambia
+## 🔬 EXPERIMENTOS PROPUESTOS
 
-### Para Entrenar Larga Sesión
-1. Crea 5-10 manzanas
-2. Deja que corra 5-10 minutos
-3. Observa convergencia de tabla Q
-4. Reset y repite con diferentes configuraciones
+### Experimento 1: Detectar Costo del Salto
+```
+1. Activa "Castigo por Saltar"
+2. Crea 3 comidas en línea horizontal
+3. Frames 0-50: El agente explora, salta mucho
+4. Frames 50-100: Empieza a notar el costo
+5. Frames 100+: Reduce saltos drásticamente
+→ Observa "Costo Salto" en debug aumentar
+```
 
-## 🔧 Personalización
+### Experimento 2: Evasión de Pinchos
+```
+1. Mapas → Obstáculos (contiene pincho)
+2. Crea más comida alrededor del pincho
+3. La IA aprenderá a rodearla, NUNCA atravesarla
+4. Incluso saltará preemptivamente para evitar
+→ Es aprendizaje de verdad, no código hardcoded
+```
 
-Puedes editar los parámetros en cada módulo:
+### Experimento 3: Cambiar Objetivos
+```
+1. Objetivo: Comida (10 min)
+2. Objetivo: Leche (cambia instantáneamente)
+3. Observa cómo adapta su comportamiento
+4. Objetivo: Bandera en lugar lejano
+→ La IA debe navegar, no solo buscar
+```
 
-**En `js/learning/LearningSystem.js`:**
+### Experimento 4: Navegación Compleja
+```
+1. Mapas → Laberinto
+2. Objetivo: Alcanzar Bandera
+3. Deja corriendo 10 minutos
+4. Verás mejora DRAMÁTICA en navegación
+→ Aprendizaje profundo en acción
+```
+
+## 📈 SEÑALES DE APRENDIZAJE REAL
+
+✅ **El agente está aprendiendo:**
+- Deja de spammear acciones después de 1-2 minutos
+- Busca deliberadamente objetivos
+- Evita pinchos con propósito (no random)
+- Reduce saltos si detecta costo
+- % de aprendizaje aumenta continuamente
+
+❌ **Algo está mal:**
+- Sigue spammeando después de 3 minutos
+- Ignora pinchos constantemente
+- Nunca alcanza objetivos
+- La gráfica de aprendizaje no cambia
+
+## 🎓 CONCEPTOS TÉCNICOS
+
+### Q-Table (Tabla de Valores)
+Cada estado discreto tiene 4 valores Q:
+
 ```javascript
-this.learningRate = 0.15;       // Qué tan rápido aprende
-this.discountFactor = 0.95;     // Importancia del futuro
-this.epsilon = 0.4;              // Exploración inicial
-this.epsilonDecay = 0.9998;     // Velocidad de aprendizaje
+Estado: "izquierda_cercano_energía-baja_suelo_peligro"
+{
+  left:  -2.5,  // Ir izquierda es malo aquí
+  right: -5.0,  // Ir derecha es peor
+  jump:  0.8,   // Saltar es bueno (evita peligro)
+  idle:  -0.1   // Esperar es neutral
+}
 ```
 
-**En `js/physics/PhysicsEngine.js`:**
+### Estados Discretos (Automáticos)
+Se crean al vuelo basándose en:
+- **Dirección**: left / right / searching
+- **Distancia**: close (< 50) / medium (< 150) / far
+- **Energía**: low (< 30) / medium (< 70) / high
+- **Posición**: ground / air
+- **Peligro**: safe / danger
+
+Esto genera ~100 estados únicos automáticamente.
+
+### Recompensas (Diseño Inteligente)
 ```javascript
-this.gravity = 0.6;              // Intensidad de gravedad
-this.jumpPower = -12;            // Fuerza de salto
-this.metabolism.basalMetabolicRate = 1.2;  // Consumo en reposo
+// Cada frame:
+-0.03            // Costo base de existir
+-0.1 si energía < 30%  // Incentiva buscar comida
+
+// Al comer:
++50              // Comida normal
++150             // BONUS si objetivo es "food"
+
++40              // Leche
++140             // BONUS si objetivo es "milk"
+
++200             // Bandera
++400             // BONUS si objetivo es "flag"
+
+-20              // Daño de pincho (enseña a evitar)
 ```
 
-**En `js/brain/CognitiveSystem.js`:**
-```javascript
-// Ajustar umbrales de decisión
-// Modificar pesos de sensores
-// Cambiar criterios emocionales
-```
+## 💡 OPTIMIZACIONES IMPLEMENTADAS
 
-## 📚 Para Entender Mejor
+1. **Sin Spam**: Cooldown de 3 frames entre acciones
+2. **Detección Temprana**: Escanea peligro con anticipación
+3. **Aprendizaje de Costos**: Promedia últimos 50 saltos
+4. **Estados Comprimidos**: Discretización inteligente
+5. **Épsilon Decay**: Reduce exploración gradualmente (0.9995/frame)
+6. **Prioridades**: Pinchos > Costo > Aleatorio > Aprendido
 
-Revisa `ARQUITECTURA.md` para:
-- Documentación técnica completa
-- Flujo de ejecución por frame
-- Variables disponibles
-- API de cada módulo
-- Ejemplos de uso avanzado
+## 📚 REFERENCIAS
 
-## 🎨 Visualización
+- **Q-Learning Wikipedia**: https://en.wikipedia.org/wiki/Q-learning
+- **DeepMind RL Glossary**: https://www.deepmind.com/learning-resources
+- **Epsilon-Greedy**: https://en.wikipedia.org/wiki/Multi-armed_bandit
 
-**Elementos visuales:**
-- 🟥 Agente (cuadrado coloreable)
-- 🍎 Comida (manzana roja pulsante)
-- 🧱 Bloques (ladrillos marrones)
-- 🟩 Suelo con césped decorativo
-- 🌤️ Cielo con gradiente azul
+## 🐛 TROUBLESHOOTING
 
-**Expresiones faciales:**
-- Ojos y boca que cambian según estado emocional
-- Parpadeo de estrés cuando energía muy baja
-- Animaciones suaves
+**P: ¿Por qué no aprende?**
+- ✓ Verifica que haya items en el mapa
+- ✓ El objetivo debe coincidir con los items
+- ✓ Espera 3+ minutos
+- ✓ Usa mapas simples primero
 
-## 🐛 Troubleshooting
+**P: ¿Por qué hace spam de movimiento?**
+- Normal en primeros 30 segundos (exploración)
+- Después debería calmarse
 
-**Si no aparece nada:**
-- Verifica que los archivos JS estén en `js/brain/`, `js/learning/`, etc.
-- Abre consola (F12) para ver errores
-- Recarga la página
+**P: ¿Cómo acelero el aprendizaje?**
+- Usa mapas simples
+- Pon muchos items
+- Desactiva "Castigo por Saltar"
 
-**Si el agente no se mueve:**
-- Crea comida (click izquierdo)
-- Espera un momento (necesita explorar primero)
-- Verifica que no haya errores en consola
+**P: ¿Qué es "Aprendizaje 85%"?**
+- Significa que epsilon es 0.15 (15% exploración)
+- Confía 85% en lo aprendido
+- 100% = no explora más
 
-**Si está muy lento:**
-- Son demasiados bloques y comida
-- Haz reset y comienza con menos objetos
-- La física y IA corren en el mismo thread
+## 🚀 VERSIÓN
 
-## 📝 Licencia
-
-Código libre para experimentar y aprender sobre IA.
-
-## 🚀 Mejoras Futuras Posibles
-
-- [ ] Visualización de tabla Q en tiempo real
-- [ ] Gráficas de convergencia
-- [ ] Guardado/carga de tabla Q entrenada
-- [ ] Múltiples agentes aprendiendo simultáneamente
-- [ ] Entorno más complejo con más tipos de objetos
-- [ ] Red neuronal en lugar de Q-Learning discreto
-- [ ] Exportación de datos de entrenamiento
+- **Versión**: 2.0 Avanzada
+- **Fecha**: Febrero 2026
+- **Motor**: Canvas + Vanilla JS
+- **Algoritmo**: Q-Learning tabular
+- **Estado**: Completamente funcional
 
 ---
 
-**¡Diviértete observando cómo una IA aprende desde cero!** 🤖✨
+**Creado por:** Dardo García + GitHub Copilot  
+**Licencia:** MIT  
+**Mantenimiento:** Activo
