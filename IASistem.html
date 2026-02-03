@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Vida Artificial - Q-Learning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .canvas-container {
+            flex: 1;
+            background: #f0f4f8;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        canvas {
+            display: block;
+            border-radius: 8px;
+            background: linear-gradient(180deg, #87CEEB 0%, #98D8E8 50%, #8B7355 100%);
+            cursor: crosshair;
+        }
+
+        .controls {
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .panel {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .panel h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 5px;
+        }
+
+        .control-group {
+            margin-bottom: 12px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .color-picker {
+            width: 100%;
+            height: 40px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+
+        .toggle-container label {
+            margin: 0;
+            font-size: 13px;
+        }
+
+        .toggle {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 26px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #667eea;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-reset {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+        }
+
+        .stats {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .stat-label {
+            color: #666;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .energy-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+            transition: width 0.3s;
+            border-radius: 10px;
+        }
+
+        .mood-indicator {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .mood-neutral {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .mood-angry {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .mood-tired {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .instructions {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .instructions strong {
+            color: #333;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .controls {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Simulador de Vida Artificial</h1>
+            <p>Aprendizaje por Refuerzo (Q-Learning)</p>
+        </div>
+
+        <div class="main-content">
+            <div class="canvas-container">
+                <canvas id="gameCanvas"></canvas>
+            </div>
+
+            <div class="controls">
+                <div class="panel">
+                    <h3>⚙️ Configuración</h3>
+                    
+                    <div class="control-group">
+                        <label for="agentColor">Color del Agente</label>
+                        <input type="color" id="agentColor" class="color-picker" value="#FF6B6B">
+                    </div>
+
+                    <div class="toggle-container">
+                        <label>Castigo por Saltar</label>
+                        <label class="toggle">
+                            <input type="checkbox" id="jumpPenalty" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <button class="btn-reset" onclick="resetSimulation()">🔄 Reset</button>
+                </div>
+
+                <div class="panel">
+                    <h3>📊 Estadísticas</h3>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Estado:</span>
+                            <span class="mood-indicator mood-neutral" id="moodDisplay">Neutral</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Energía:</span>
+                            <span class="stat-value" id="energyDisplay">100</span>
+                        </div>
+                        <div class="energy-bar">
+                            <div class="energy-fill" id="energyBar" style="width: 100%"></div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Comida Consumida:</span>
+                            <span class="stat-value" id="foodCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Saltos:</span>
+                            <span class="stat-value" id="jumpCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Experiencia:</span>
+                            <span class="stat-value" id="experienceCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>ℹ️ Instrucciones</h3>
+                    <div class="instructions">
+                        <p><strong>Click Izquierdo:</strong> Crear comida 🍎</p>
+                        <p><strong>Click Derecho:</strong> Colocar bloques 🧱</p>
+                        <p><strong>La IA aprende sola:</strong> Al principio se moverá aleatoriamente, pero con el tiempo aprenderá a buscar comida y evitar desperdiciar energía.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Importar módulos -->
+    <script src="js/brain/CognitiveSystem.js"></script>
+    <script src="js/learning/LearningSystem.js"></script>
+    <script src="js/physics/PhysicsEngine.js"></script>
+    <script src="js/core/Entities.js"></script>
+
+    <script>
+        // ==========================================
+        // CONFIGURACIÓN INICIAL DEL SIMULADOR
+        // ==========================================
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Dimensiones del canvas
+        canvas.width = 800;
+        canvas.height = 500;
+        const GROUND_HEIGHT = 50;
+        
+        // ==========================================
+        // VARIABLES GLOBALES
+        // ==========================================
+        let agent;
+        let foods = [];
+        let blocks = [];
+        let frameCount = 0;
+        
+        /**
+         * Inicializar el agente
+         */
+        function initAgent() {
+            agent = new Agent(canvas);
+            agent.color = document.getElementById('agentColor').value;
+        }
+
+        // ==========================================
+        // EVENT LISTENERS
+        // ==========================================
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (e.button === 0) {
+                // Click izquierdo: Crear comida
+                foods.push(new Food(x, y));
+            }
+        });
+
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Click derecho: Crear bloque
+            blocks.push(new Block(x - 20, y - 20));
+        });
+
+        // ==========================================
+        // FUNCIONES DE CONTROL
+        // ==========================================
+        
+        /**
+         * Resetear la simulación completamente
+         */
+        function resetSimulation() {
+            initAgent();
+            foods = [];
+            blocks = [];
+            frameCount = 0;
+            console.log('✨ Simulación reiniciada');
+        }
+
+        /**
+         * Actualizar interfaz de usuario
+         */
+        function updateUI() {
+            // Energía
+            const energyPercent = Math.round((agent.energy / agent.maxEnergy) * 100);
+            document.getElementById('energyDisplay').textContent = energyPercent;
+            document.getElementById('energyBar').style.width = energyPercent + '%';
+
+            // Color de barra según energía
+            const energyBar = document.getElementById('energyBar');
+            if (energyPercent > 60) {
+                energyBar.style.background = 'linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%)';
+            } else if (energyPercent > 30) {
+                energyBar.style.background = 'linear-gradient(90deg, #FFC107 0%, #FF9800 100%)';
+            } else {
+                energyBar.style.background = 'linear-gradient(90deg, #FF6B6B 0%, #FF3838 100%)';
+            }
+
+            // Estado de ánimo
+            const moodDisplay = document.getElementById('moodDisplay');
+            const moodTexts = { 'neutral': '😐 Neutral', 'angry': '😠 Enojado', 'tired': '😴 Cansado' };
+            moodDisplay.textContent = moodTexts[agent.mood];
+            moodDisplay.className = 'mood-indicator mood-' + agent.mood;
+
+            // Estadísticas
+            document.getElementById('foodCount').textContent = agent.foodEaten;
+            document.getElementById('jumpCount').textContent = agent.jumpCount;
+            document.getElementById('experienceCount').textContent = agent.learning.stats.totalExperiences;
+        }
+
+        /**
+         * Dibujar el suelo y decoraciones
+         */
+        function drawGround() {
+            // Suelo
+            ctx.fillStyle = '#7CB342';
+            ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT);
+
+            // Cesped decorativo
+            ctx.strokeStyle = '#558B2F';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < canvas.width; i += 10) {
+                ctx.beginPath();
+                ctx.moveTo(i, canvas.height - GROUND_HEIGHT);
+                ctx.lineTo(i + 3, canvas.height - GROUND_HEIGHT - 5);
+                ctx.stroke();
+            }
+        }
+
+        /**
+         * Loop principal del juego
+         */
+        function gameLoop() {
+            frameCount++;
+
+            // Limpiar canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Fondo
+            ctx.fillStyle = 'rgba(135, 206, 235, 0.5)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height - GROUND_HEIGHT);
+            
+            drawGround();
+
+            // Actualizar comidas
+            foods.forEach(food => {
+                food.update();
+                food.draw(ctx);
+            });
+
+            // Dibujar bloques
+            blocks.forEach(block => {
+                block.draw(ctx);
+            });
+
+            // Actualizar y dibujar agente
+            const jumpPenalty = document.getElementById('jumpPenalty').checked;
+            agent.color = document.getElementById('agentColor').value;
+            agent.update(foods, blocks, jumpPenalty);
+            agent.draw(ctx);
+
+            // Actualizar interfaz
+            updateUI();
+
+            // Continuar loop
+            requestAnimationFrame(gameLoop);
+        }
+
+        // ==========================================
+        // INICIALIZAR LA SIMULACIÓN
+        // ==========================================
+        initAgent();
+        gameLoop();
+    </script>
+</body>
+</html>
